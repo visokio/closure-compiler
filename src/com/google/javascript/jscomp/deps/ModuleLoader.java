@@ -203,7 +203,7 @@ public final class ModuleLoader {
      * <p>Primarily used for per-file ES6 module transpilation
      */
     public ModulePath resolveModuleAsPath(String moduleAddress) {
-      if (!moduleAddress.endsWith(".js")) {
+      if (!moduleAddress.endsWith(".js") && !moduleAddress.endsWith(".jsx")) {
         moduleAddress += ".js";
       }
       String path = ModuleNames.escapePath(moduleAddress);

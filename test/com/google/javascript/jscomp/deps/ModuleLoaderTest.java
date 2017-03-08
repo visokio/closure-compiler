@@ -42,6 +42,18 @@ public final class ModuleLoaderTest extends TestCase {
     assertUri("js/a.js", loader.resolve("js\\a.js"));
     assertUri("js/b.js", loader.resolve("js\\a.js").resolveJsModule("./b"));
   }
+  
+  public void testJsxExtension() {
+	  ModuleLoader loader =
+        new ModuleLoader(
+            null, 
+            ImmutableList.of("."), 
+            inputs("js/a.js", "js/b.js", "js/c.jsx"),
+            ModuleLoader.ResolutionMode.NODE);
+    assertUri("js/a.js", loader.resolve("js/a.js"));
+    assertUri("js/b.js", loader.resolve("js/a.js").resolveJsModule("./b"));
+    assertUri("js/c.jsx", loader.resolve("js/a.js").resolveJsModule("./c.jsx"));
+  }
 
   public void testJsExtensionNode() {
     ModuleLoader loader =
