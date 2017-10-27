@@ -229,12 +229,13 @@ public final class ModuleLoader {
 
   /** Whether this is absolute to the compilation. */
   public static boolean isAbsoluteIdentifier(String name) {
-    return name.startsWith(MODULE_SLASH);
+    // In the Visokio fork, we treat all non-relative as absolute, and don't use node_modules.
+    return !isRelativeIdentifier(name);
   }
 
   /** Whether this is neither absolute or relative. */
   public static boolean isAmbiguousIdentifier(String name) {
-    return !isAbsoluteIdentifier(name) && !isRelativeIdentifier(name);
+    return false; // As above
   }
 
   /** Whether name is a path-based identifier (has a '/' character) */
