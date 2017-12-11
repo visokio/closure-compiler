@@ -1225,7 +1225,7 @@ public class GlobalTypeInfoCollector implements CompilerPass {
         return;
       }
       JSDocInfo jsdoc = NodeUtil.getBestJSDocInfo(qnameNode);
-      Typedef td = Typedef.make(qnameNode, jsdoc.getTypedefType());
+      Typedef td = Typedef.make(qnameNode, jsdoc.getTypedefType(), jsdoc.makesStructs());
       currentScope.addTypedef(qnameNode, td);
     }
 

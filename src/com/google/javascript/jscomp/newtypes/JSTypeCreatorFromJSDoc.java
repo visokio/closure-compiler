@@ -121,6 +121,11 @@ public final class JSTypeCreatorFromJSDoc implements Serializable {
         "JSC_NTI_CIRCULAR_TYPEDEF_ENUM",
         "Circular typedefs/enums are not allowed");
 
+  public static final DiagnosticType COMPLEX_TYPEDEF_STRUCT =
+      DiagnosticType.warning(
+          "JSC_NTI_COMPLEX_TYPEDEF_STRUCT",
+          "Typedefs with struct are only allowed for simple record types");
+  
   public static final DiagnosticType ENUM_WITH_TYPEVARS =
     DiagnosticType.warning(
         "JSC_NTI_ENUM_WITH_TYPEVARS",
@@ -173,6 +178,7 @@ public final class JSTypeCreatorFromJSDoc implements Serializable {
   public static final DiagnosticGroup COMPATIBLE_DIAGNOSTICS = new DiagnosticGroup(
       BAD_ARRAY_TYPE_SYNTAX,
       CIRCULAR_TYPEDEF_ENUM,
+      COMPLEX_TYPEDEF_STRUCT,
       CONFLICTING_EXTENDED_TYPE,
       CONFLICTING_IMPLEMENTED_TYPE,
       EXTENDS_NON_INTERFACE,
@@ -503,6 +509,15 @@ public final class JSTypeCreatorFromJSDoc implements Serializable {
             Node propNameNode = propNode.hasChildren() ? propNode.getFirstChild() : propNode;
             this.recordPropertyName.apply(propNameNode);
           }
+        }
+      }
+      if (td.isStruct()) {
+        if (tdType.isSingletonObj()) {
+          ObjectType ot = tdType.getObjTypeIfSingletonObj().withObjectKind(ObjectKind.STRUCT);
+          tdType = JSType.fromObjectType(ot);
+        } else {
+          warnings.add(JSError.make(
+              td.getTypeExprForErrorReporting().getRoot(), COMPLEX_TYPEDEF_STRUCT));
         }
       }
     }

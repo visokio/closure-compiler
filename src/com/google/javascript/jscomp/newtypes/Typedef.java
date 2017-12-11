@@ -41,8 +41,9 @@ public final class Typedef implements Serializable {
   private State state;
   private JSTypeExpression typeExpr;
   private JSType type;
+  private final boolean struct;
 
-  private Typedef(Node defSite, JSTypeExpression typeExpr) {
+  private Typedef(Node defSite, JSTypeExpression typeExpr, boolean struct) {
     checkState(defSite.isQualifiedName(), defSite);
     this.defSite = defSite;
     this.state = State.NOT_RESOLVED;
@@ -50,10 +51,11 @@ public final class Typedef implements Serializable {
     this.type = null;
     // Non-null iff the typedef is not resolved
     this.typeExpr = typeExpr;
+    this.struct = struct;
   }
 
-  public static Typedef make(Node defSite, JSTypeExpression typeExpr) {
-    return new Typedef(defSite, typeExpr);
+  public static Typedef make(Node defSite, JSTypeExpression typeExpr, boolean struct) {
+    return new Typedef(defSite, typeExpr, struct);
   }
 
   public boolean isResolved() {
@@ -95,5 +97,9 @@ public final class Typedef implements Serializable {
   @Override
   public String toString() {
     return this.defSite.getQualifiedName();
+  }
+  
+  boolean isStruct() {
+    return struct;
   }
 }
