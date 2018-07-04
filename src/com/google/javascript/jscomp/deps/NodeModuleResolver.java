@@ -37,7 +37,7 @@ import javax.annotation.Nullable;
  * within the nearest node_modules folder ancestor.
  */
 public class NodeModuleResolver extends ModuleResolver {
-  private static final String[] FILE_EXTENSIONS_TO_SEARCH = {"", ".js", ".json"};
+  private static final String[] FILE_EXTENSIONS_TO_SEARCH = {"", ".js", ".jsx", ".json"}; // .jsx addition for Visokio; also see ModuleLoader.resolveModuleAsPath
   private static final String[] FILES_TO_SEARCH = {
     ModuleLoader.MODULE_SLASH + "package.json",
     ModuleLoader.MODULE_SLASH + "index.js",

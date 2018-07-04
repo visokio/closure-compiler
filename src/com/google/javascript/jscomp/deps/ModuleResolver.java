@@ -55,7 +55,7 @@ public abstract class ModuleResolver {
       String scriptAddress, String moduleAddress, String sourcename, int lineno, int colno);
 
   public String resolveModuleAsPath(String scriptAddress, String moduleAddress) {
-    if (!moduleAddress.endsWith(".js")) {
+    if (!moduleAddress.endsWith(".js") && !moduleAddress.endsWith(".jsx")) {
       moduleAddress += ".js";
     }
     String path = pathEscaper.escape(moduleAddress);
