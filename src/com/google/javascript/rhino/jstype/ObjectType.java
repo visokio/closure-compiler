@@ -624,6 +624,14 @@ public abstract class ObjectType extends JSType implements Serializable {
         return false;
       }
     }
+    
+    // But, if typeB is @struct, disallow additional unknown properties:
+    if (typeB.isStruct()) {
+      for (String property : typeA.getPropertyNames()) {
+        if (!typeB.hasProperty(property)) return false;
+      }
+    }
+    
     return true;
   }
 
