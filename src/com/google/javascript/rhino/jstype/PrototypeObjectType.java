@@ -287,12 +287,17 @@ public class PrototypeObjectType extends ObjectType {
     }
     // Don't pretty print recursively.
     prettyPrint = false;
+    appendOwnProperties(sb, forAnnotations, MAX_PRETTY_PRINTED_PROPERTIES);
+    prettyPrint = true;
+    return sb;
+  }
 
+  public StringBuilder appendOwnProperties(StringBuilder sb, boolean forAnnotations, int maxPrettyPrintedProperties) {
     // Use a tree set so that the properties are sorted.
     Set<String> propertyNames = new TreeSet<>();
     for (ObjectType current = this;
         current != null && !current.isNativeObjectType()
-            && propertyNames.size() <= MAX_PRETTY_PRINTED_PROPERTIES;
+            && propertyNames.size() <= maxPrettyPrintedProperties;
         current = current.getImplicitPrototype()) {
       propertyNames.addAll(current.getOwnPropertyNames());
     }
@@ -315,7 +320,7 @@ public class PrototypeObjectType extends ObjectType {
       getPropertyType(property).appendAsNonNull(sb, forAnnotations);
 
       ++i;
-      if (!forAnnotations && i == MAX_PRETTY_PRINTED_PROPERTIES) {
+      if (!forAnnotations && i == maxPrettyPrintedProperties) {
         sb.append(", ...");
         break;
       }
@@ -326,7 +331,6 @@ public class PrototypeObjectType extends ObjectType {
 
     sb.append("}");
 
-    prettyPrint = true;
     return sb;
   }
 

@@ -48,6 +48,7 @@ import com.google.javascript.rhino.jstype.JSType.SubtypingMode;
 import com.google.javascript.rhino.jstype.JSTypeNative;
 import com.google.javascript.rhino.jstype.JSTypeRegistry;
 import com.google.javascript.rhino.jstype.ObjectType;
+import com.google.javascript.rhino.jstype.PrototypeObjectType;
 import com.google.javascript.rhino.jstype.StaticTypedSlot;
 import com.google.javascript.rhino.jstype.TemplateTypeMap;
 import com.google.javascript.rhino.jstype.TemplateTypeMapReplacer;
@@ -1016,6 +1017,9 @@ class TypeValidator implements Serializable {
       foundStr = found.toAnnotationString(Nullability.IMPLICIT);
       requiredStr = required.toAnnotationString(Nullability.IMPLICIT);
     }
+    // Append full details of structural interfaces, so you can interpret the mismatch:
+    foundStr += formatStructuralInterfaceDetailsAppendage(found);
+    requiredStr += formatStructuralInterfaceDetailsAppendage(required);
     String missingStr = "";
     String mismatchStr = "";
     if (missing != null && !missing.isEmpty()) {
@@ -1030,6 +1034,22 @@ class TypeValidator implements Serializable {
     } else {
       return MessageFormat.format(FOUND_REQUIRED, description, foundStr, requiredStr);
     }
+  }
+  
+  /**
+   * If the type is a structural interface, adds details of its structure.
+   * Otherwise you just see the name, and it's hard to find what's wrong/missing.
+   */
+  private static String formatStructuralInterfaceDetailsAppendage(JSType type) {
+    if (type instanceof PrototypeObjectType) {
+      PrototypeObjectType proto = (PrototypeObjectType) type;
+      FunctionType con = proto.getConstructor();
+      if (con!=null && con.isStructuralInterface()) {
+        StringBuilder sb = proto.appendOwnProperties(new StringBuilder(), true, Integer.MAX_VALUE);
+        return " ---> "+sb;
+      }
+    }
+    return "";
   }
 
   /**
